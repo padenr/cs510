@@ -1,0 +1,63 @@
+GNU Prolog 1.4.5 (64 bits)
+Compiled Jul 14 2018, 13:19:42 with x86_64-w64-mingw32-gcc
+By Daniel Diaz
+Copyright (C) 1999-2018 Daniel Diaz
+| ?- consult('C:/Users/Paden/Documents/Prolog/scan.pl').
+compiling C:/Users/Paden/Documents/Prolog/scan.pl for byte code...
+C:/Users/Paden/Documents/Prolog/scan.pl:33: warning: singleton variables [C] for restfilename/2
+C:/Users/Paden/Documents/Prolog/scan.pl:42: warning: singleton variables [C] for restprog/3
+C:/Users/Paden/Documents/Prolog/scan.pl:43: warning: singleton variables [T] for restprog/3
+C:/Users/Paden/Documents/Prolog/scan.pl:58: warning: singleton variables [T,E] for gettoken/3
+C:/Users/Paden/Documents/Prolog/scan.pl compiled, 79 lines read - 15042 bytes written, 21 ms
+
+yes
+| ?- consult('C:/Users/Paden/Documents/Prolog/test.pl').
+compiling C:/Users/Paden/Documents/Prolog/test.pl for byte code...
+C:/Users/Paden/Documents/Prolog/test.pl compiled, 11 lines read - 22600 bytes written, 23 ms
+
+yes
+| ?- tests.
+
+===========================
+    sum := sum+k;
+    k := k + 1;
+    if (k < 0) then
+       k := 0 - k
+    else
+       skip
+    endif
+    
+    while (k <10) do
+      sum = sum+1
+    done
+    
+test1.txt :: Passes
+
+===========================
+    x := 124;
+    x := 123 + 456;
+    x := 123 * 456;
+    x := 456 - 123;
+    x := 123/456;
+    x := 123 + 456 * (3+6);
+    x := y;
+    x := y + 34;
+    x = y * z;
+    if (x<123) then y := 0 else y := 1 endif;
+    if (x<=123) then y := 0 else y := 1 endif;
+    if (x>123) then y := 0 else y := 1 endif;
+    if (x>=123) then y := 0 else y := 1 endif;
+    if (x=123) then y := 0 else y := 1 endif;
+    if (x!=123) then y := 0 else y := 1 endif;
+    while(123 < z) do y := y+1 done
+    while(123 <= z) do y := y+1 done
+    while(123 > z) do y := y+1 done
+    while(123 >= z) do y := y+1 done
+    while(123 != z) do y := y+1 done
+    while(123 = z) do y := y+1 done
+    
+test2.txt :: Passes
+===========================
+
+(47 ms) yes
+| ?- 

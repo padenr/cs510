@@ -62,13 +62,14 @@ reswd(var).      reswd(integer).  reswd(boolean).  reswd(read).
 reswd(write).    reswd(while).    reswd(do).       reswd(if).
 reswd(then).     reswd(else).     reswd(skip).     reswd(or).
 reswd(and).      reswd(true).     reswd(false).    reswd(not).
+reswd(xor).      reswd(endif).    reswd(done).
 
 single(40,lparen).   single(41,rparen).    single(42,times).
 single(43,plus).     single(44,comma).     single(45,minus).
 single(47,divides).  single(59,semicolon). single(61,equal).
 
 double(58,colon).    double(60,less).      double(62,grtr).
-double(33,exclamation). 
+double(33,exclamation).
 
 pair(58,61,assign).       % :=
 pair(60,61,lteq).         % <=
