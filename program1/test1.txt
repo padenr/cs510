@@ -1,0 +1,11 @@
+sum := sum+k;
+k := k + 1;
+if (k < 0) then
+   k := 0 - k
+else
+   skip
+endif
+
+while (k <10) do
+  sum = sum+1
+done
