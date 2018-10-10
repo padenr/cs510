@@ -1,0 +1,10 @@
+fact :=1;
+k:=1;
+
+while (k<100) do
+{ fact := fact*k;
+  k :=k+1
+};
+
+y := fact
+

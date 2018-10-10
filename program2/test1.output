@@ -1,0 +1,34 @@
+>>> Interpreting: While programs <<<
+
+Enter name of source file: 
+test1.txt
+
+    fact :=1;
+    k:=1;
+    
+    while (k<100) do
+    { fact := fact*k;
+      k :=k+1
+    };
+    
+    y := fact
+    
+    
+    
+    
+Scan successful
+[ide(fact),assign,num(1),semicolon,ide(k),assign,num(1),semicolon,while,lparen,ide(k),less,num(100),rparen,do,lbrace,ide(fact),assign,ide(fact),times,ide(k),semicolon,ide(k),assign,ide(k),plus,num(1),rbrace,semicolon,ide(y),assign,ide(fact),eop]
+
+Parse successful
+Parse = [assign(fact,num(1),1),assign(k,num(1),2),while(bExpr(exp(less,ide(k),num(100)),3),body([assign(fact,exp(times,ide(fact),ide(k)),4),assign(k,exp(plus,ide(k),num(1)),5)])),assign(y,ide(fact),6)]
+
+Blocks = [assign(fact,num(1),1),assign(k,num(1),2),bExpr(exp(less,ide(k),num(100)),3),assign(fact,exp(times,ide(fact),ide(k)),4),assign(k,exp(plus,ide(k),num(1)),5),assign(y,ide(fact),6)]
+
+Labels = [1,2,3,4,5,6]
+
+Flow = [(1,2),(2,3),(5,6),(5,3),(4,5),(3,4)]
+
+FlowR = [(2,1),(3,2),(6,5),(3,5),(5,4),(4,3)]
+
+
+true ? 

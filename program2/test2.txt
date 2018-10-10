@@ -1,0 +1,21 @@
+x := 124;
+x := 123 + 456;
+x := 123 * 456;
+x := 456 - 123;
+x := 123/456;
+x := 123 + 456 * (3+6);
+x := y;
+x := y + 34;
+x := y * z;
+if (x<234) then y := 0 else y := 1 ;
+if (x<=235) then y := 0 else y := 1 ;
+if (x>236) then y := 0 else y := 1 ;
+if (x>=237) then y := 0 else y := 1 ;
+if (x=238) then y := 0 else y := 1;
+if (x!=239) then y := 0 else y := 1;
+while(321 < z) do y := y+1 ;
+while(322 <= z) do y := y+1 ;
+while(323 > z) do y := y+1 ;
+while(324 >= z) do y := y+1 ;
+while(325 != z) do y := y+1 ;
+while(326 = z) do y := y+1 
