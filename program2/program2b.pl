@@ -1,3 +1,5 @@
+% Paden Rumsey - Programming assignment 2
+
 % For compiled prolog
 %:- initialization(go).
 %:- dynamic(known/3).
@@ -155,8 +157,8 @@ nthBlock(N,[_B|Blks],BOut) :-
 final(assign(_X,_E,N),[N]).
 final(skip(N),[N]).
 final(bExpr(_E,N),[N]).
-final(while(_E,B),F) :- 
-   final(B,F).
+final(while(E,_B),F) :- 
+   final(E,F).
 final(body(Cmds),F) :- 
    final(Cmds,F).
 final([_C|Cmds],F) :- 
@@ -173,7 +175,19 @@ final(if(_E,Then,Else),F) :-
 %----------------------------
 % init(Cmds,N)  is true when N is first label in Cmds
 %----------------------------
-init(assign(_X,_E,N),N).
+init(assign(_X,_E,I),I).
+init(skip(I),I).
+init(bExpr(_E,I),I).  
+init(if(E,_Then,_Else),I) :-
+  init(E,I). 
+init(if(E,_Then),I) :-
+  init(E,I). 
+init(while(E,_Cmds),I) :-
+  init(E,I). 
+init(body(Cmds),I) :-
+  init(Cmds,I). 
+init([C|_Cmds],I) :-
+  init(C,I). 
 
    
    
@@ -181,6 +195,29 @@ init(assign(_X,_E,N),N).
 % blocks(Cmds,Bs) is true when lsit Bs contains all blocks in Cmds   
 %----------------------------
 blocks(assign(X,E,N),[assign(X,E,N)]).
+blocks(skip(N),[skip(N)]).
+blocks(bExpr(_E,N),[bExpr(_E,N)]).
+blocks(if(E,Then),B) :-
+  blocks(E,B1),
+  blocks(Then,B2),
+  union(B1,B2,B).
+blocks(if(E,Then,Else),B) :-
+  blocks(E,B1),
+  blocks(Then,B2), 
+  blocks(Else,B3),
+  union3(B1,B2,B3,B).
+blocks(while(E,Cmds),B) :-
+  blocks(E,B1),
+  blocks(Cmds,B2), 
+  union(B1,B2,B).  
+blocks(body(Cmds),B) :-
+  blocks(Cmds,B). 
+blocks([C|Cmds],B) :-
+  blocks(C,B1),
+  blocks(Cmds,B2),
+  union(B1,B2,B).
+blocks([C],B) :- 
+  blocks(C,B). 
 
 
 
@@ -188,6 +225,14 @@ blocks(assign(X,E,N),[assign(X,E,N)]).
 % labels (S,L).  L is list of lables in S
 %----------------------------
 labels(assign(_X,_E,N),[N]).
+labels(bExpr(_E,N),[N]). 
+labels(skip(N),[N]).
+labels([C|Cmds], N) :-
+  labels(C,N1),
+  labels(Cmds,N2),
+  union(N1,N2,N).
+labels([C],N) :-
+  labels(C,N).
  
 
 %----------------------------
@@ -195,6 +240,35 @@ labels(assign(_X,_E,N),[N]).
 %    where a statement C1 (with label L1) in S leads to 
 %    another statement C2 (with label L2) in S
 %----------------------------
+flow(assign(_X,_E,_N),[]).
+flow(skip(_N),[]).
+flow(bExpr(_E,_N),[]).
+flow(if(E,Then),FL) :- 
+  init(Then,FL1), 
+  final(E,FL2),
+  mymapr(FL2,FL1,FL3),
+  flow(Then,FL4), 
+  union(FL3,FL4,FL). 
+flow(if(E,Then,Else),FL) :- 
+  init(Then,FL1),
+  init(Else,FL2),  
+  final(E,FL3),
+  mymapr(FL3,FL1,FL4),
+  mymapr(FL3,FL2,FL5), 
+  flow(Then,FL6), 
+  flow(Else,FL7), 
+  union(FL6,FL7,ST), 
+  union(FL4,FL5,INIT),
+  union(INIT,ST,FL). 
+flow(while(E,Cmds),FL) :-
+  flow(Cmds,FL1),  
+  init(Cmds,FL2), 
+  init(E,FL3), 
+  final(Cmds, FL4), 
+  mymapr(FL4,FL3,FL5),
+  union3(FL1,[(FL3,FL2)],FL5,FL).
+flow(body(Cmds),FL) :-
+  flow(Cmds,FL). 
 flow([C|Cmds],F) :- 
    final(C,L1),
    init(Cmds,L2),
@@ -202,6 +276,8 @@ flow([C|Cmds],F) :-
    flow(C,F2),
    flow(Cmds,F3),
    append3(F1,F2,F3,F).
+flow([C],FL) :-
+  flow(C,FL). 
 
 
 %----------------------------
@@ -216,6 +292,36 @@ flowR([],[]).
 %----------------------------
 freeVars(num(_N),[]).
 freeVars(ide(V),[V]).
+freeVars(exp(_OP,OPRD1,OPRD2), V) :-
+  freeVars(OPRD1,V1), 
+  freeVars(OPRD2,V2), 
+  union(V1,V2,V). 
+freeVars(bExpr(E,_N),V) :-
+  freeVars(E,V). 
+freeVars(assign(_X,E,_N), V) :-
+  freeVars(E,V). 
+freeVars(skip(_N),[]). 
+freeVars(if(E,Then),V) :-
+  freeVars(E,V1),
+  freeVars(Then,V2),
+  union(V1,V2,V).
+freeVars(if(E,Then,Else),V) :-
+  freeVars(E,V1),
+  freeVars(Then,V2), 
+  freeVars(Else,V3),
+  union3(V1,V2,V3,V).
+freeVars(while(E,Cmds),V) :-
+  freeVars(E,V1),
+  freeVars(Cmds,V2), 
+  union(V1,V2,V).  
+freeVars(body(Cmds),V) :-
+  bfreeVarslocks(Cmds,V). 
+freeVars([C|Cmds],V) :-
+  freeVars(C,V1),
+  freeVars(Cmds,V2),
+  union(V1,V2,V).
+freeVars([C],V) :- 
+  freeVars(C,V). 
 
 %----------------------------
 % aExp(Exp,As) is true when list As contains all
@@ -286,7 +392,7 @@ genAE([],[]).
       see(FileName), scan(Tokens), seen, write('Scan successful'), nl, !,
       write(Tokens), nl, nl,!,
       program(Parse,Tokens,[eop]), write('Parse successful'), nl, !,
-      write('Parse = '),write(Parse), nl, nl,	  
+      write('Parse = '),write(Parse), nl, nl,	   
 	  blocks(Parse,B),
 	  write('Blocks = '),write(B),nl,nl,
 	  labels(B,L),
@@ -294,7 +400,9 @@ genAE([],[]).
 	  flow(Parse,F),
 	  write('Flow = '),write(F),nl,nl,
 	  flowR(F,Fr),
-	  write('FlowR = '),write(Fr),nl,nl.
+	  write('FlowR = '),write(Fr),nl,nl,
+    freeVars(B,Fv),
+	  write('FreeVars = '),write(Fv),nl,nl.
  
 
 	  
