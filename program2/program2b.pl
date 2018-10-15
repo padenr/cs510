@@ -315,7 +315,7 @@ freeVars(while(E,Cmds),V) :-
   freeVars(Cmds,V2), 
   union(V1,V2,V).  
 freeVars(body(Cmds),V) :-
-  bfreeVarslocks(Cmds,V). 
+  freeVars(Cmds,V). 
 freeVars([C|Cmds],V) :-
   freeVars(C,V1),
   freeVars(Cmds,V2),
